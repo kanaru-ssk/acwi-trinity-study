@@ -1,5 +1,5 @@
 import { fetchAcwiData } from '$lib/server/fetchAcwiData';
-import { simulate } from '$lib/server/simulate';
+import { makeSimulationData, payoutPeriods, withdrawalRates } from '$lib/server/makeSimulationData';
 
 export const prerender = true;
 
@@ -10,7 +10,7 @@ export const load = async () => {
 	// TODO: 最新データがある場合は為替データ取得
 	// TODO: 最新データをMongoDBにinsert
 
-	const simulation = await simulate(acwiData);
+	const simulation = await makeSimulationData(acwiData);
 	console.log(simulation);
 
 	const acwiDataStr = acwiData.map((v) => {
@@ -22,5 +22,5 @@ export const load = async () => {
 		];
 	});
 
-	return { acwiData: acwiDataStr };
+	return { acwiData: acwiDataStr, simulation, payoutPeriods, withdrawalRates };
 };
