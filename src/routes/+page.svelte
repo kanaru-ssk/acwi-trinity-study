@@ -4,4 +4,4 @@
 	export let data;
 </script>
 
-<Home {data} />
+<Home acwiData={data.acwiData} />
