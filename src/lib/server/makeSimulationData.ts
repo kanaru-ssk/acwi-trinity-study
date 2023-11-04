@@ -3,23 +3,10 @@ import type { AcwiData } from '$lib/type/AcwiData';
 export const payoutPeriods = [15, 20, 25, 30];
 export const withdrawalRates = [3, 4, 5, 6, 7, 8, 9, 10];
 
-export const makeSimulationData = async (acwiData: AcwiData[]) => {
-	return payoutPeriods.map((payoutPeriod) => {
-		const data = withdrawalRates.map((withdrawalRate) => {
-			const successRate = simulate(acwiData, payoutPeriod, withdrawalRate);
-
-			return {
-				withdrawalRate,
-				successRate
-			};
-		});
-
-		return {
-			payoutPeriod,
-			data
-		};
-	});
-};
+export const makeSimulationData = async (acwiData: AcwiData[]) =>
+	payoutPeriods.map((payoutPeriod) =>
+		withdrawalRates.map((withdrawalRate) => simulate(acwiData, payoutPeriod, withdrawalRate))
+	);
 
 const simulate = (acwiData: AcwiData[], payoutPeriod: number, withdrawalRate: number) => {
 	const numOfSimulation = 1 + acwiData.length - 12 * payoutPeriod;

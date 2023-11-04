@@ -1,4 +1,4 @@
-export const fetchOriginalAcwiData = async () => {
+export const fetchAcwiDataFromOrigin = async () => {
 	// TODO: MongoDBに保存されていない最新データのみ取得するように修正する。
 	const endpoint = 'https://app2.msci.com/products/service/index/indexmaster/getLevelDataForGraph';
 	const currencySymbol = 'currency_symbol=USD';
