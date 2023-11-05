@@ -1,50 +1,34 @@
 <script lang="ts">
+	import SimulationTable from '$lib/components/SimulationTable.svelte';
 	export let data;
 
 	const year = new Date().getFullYear();
 	const month = new Date().getMonth() + 1;
+	const title = `【${year}年${month}月最新】日本版トリニティスタディ`;
+	const subTitle = 'ACWIを円建で取崩しシミュレーション';
 </script>
 
-<main>
-	<h1>【{year}年{month}月最新】</h1>
+<svelte:head>
+	<title>{title} | {subTitle}</title>
+</svelte:head>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Payout Period</th>
-				{#each data.withdrawalRates as rate}
-					<th>{rate}%</th>
-				{/each}
-			</tr>
-		</thead>
-		<tbody />
-		{#each data.simulationResults as results, i}
-			<tr>
-				<th>
-					{data.simulationMeta[i].payoutPeriod} Year (n = {data.simulationMeta[i].numOfSimulation})
-				</th>
-				{#each results as result}
-					{@const r = result < 0.5 ? 255 : 255 - 155 * 2 * (result - 0.5)}
-					{@const g = result > 0.5 ? 255 : 100 + 155 * 2 * result}
-					{@const b = 100}
-					<td style:background-color="rgb({r},{g},{b})">
-						{Math.floor(100 * result)}
-					</td>
-				{/each}
-			</tr>
-		{/each}
-	</table>
+<main>
+	<h1>{title}</h1>
+	<h2>{subTitle}</h2>
+
+	<SimulationTable {data} />
 </main>
 
 <style>
-	table {
-		border: 1px solid black;
-		border-collapse: collapse;
-		width: 100%;
+	h1 {
+		font-size: 24px;
+		margin-bottom: 0;
 	}
-	th,
-	td {
-		border: 1px solid black;
-		padding: 4px 16px;
+
+	h2 {
+		font-size: 16px;
+		font-weight: 400;
+		margin-top: 0;
+		padding-left: 16px;
 	}
 </style>
