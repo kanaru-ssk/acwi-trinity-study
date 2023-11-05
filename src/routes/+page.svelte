@@ -20,7 +20,9 @@
 		<tbody />
 		{#each data.simulationResults as results, i}
 			<tr>
-				<th>{data.payoutPeriods[i]} Year</th>
+				<th>
+					{data.simulationMeta[i].payoutPeriod} Year (n = {data.simulationMeta[i].numOfSimulation})
+				</th>
 				{#each results as result}
 					{@const r = result < 0.5 ? 255 : 255 - 155 * 2 * (result - 0.5)}
 					{@const g = result > 0.5 ? 255 : 100 + 155 * 2 * result}

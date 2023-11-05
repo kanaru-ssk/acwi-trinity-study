@@ -4,17 +4,30 @@ export const payoutPeriods = [15, 20, 25, 30];
 export const withdrawalRates = [3, 4, 5, 6, 7, 8, 9, 10];
 
 // 取崩しシミュレーションデータを作成
-// 取崩し期間と取崩し率の二元配列を返す
-export const makeSimulationData = async (acwiData: AcwiData[]) =>
-	payoutPeriods.map((payoutPeriod) =>
-		withdrawalRates.map((withdrawalRate) => simulate(acwiData, payoutPeriod, withdrawalRate))
+// simulationMeta : 取崩し期間とシミュレーション回数の配列
+// simulationResults : 取崩し期間と取崩し率の二元配列
+export const makeSimulationData = async (acwiData: AcwiData[]) => {
+	const simulationMeta = payoutPeriods.map((payoutPeriod) => ({
+		payoutPeriod,
+		numOfSimulation: 1 + acwiData.length - 12 * payoutPeriod
+	}));
+
+	const simulationResults = simulationMeta.map(({ payoutPeriod, numOfSimulation }) =>
+		withdrawalRates.map((withdrawalRate) =>
+			simulate(acwiData, payoutPeriod, withdrawalRate, numOfSimulation)
+		)
 	);
 
-// TODO: シミュレーション回数を返すようにする
-// 取崩しシミュレーション
-const simulate = (acwiData: AcwiData[], payoutPeriod: number, withdrawalRate: number) => {
-	const numOfSimulation = 1 + acwiData.length - 12 * payoutPeriod;
+	return { simulationMeta, simulationResults };
+};
 
+// 取崩しシミュレーション
+const simulate = (
+	acwiData: AcwiData[],
+	payoutPeriod: number,
+	withdrawalRate: number,
+	numOfSimulation: number
+) => {
 	let countFailure = 0;
 	for (let i = 0; i < numOfSimulation; i++) {
 		let amountRemaining = acwiData[i].price_jpy;

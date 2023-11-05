@@ -2,7 +2,7 @@ import { addJpyData } from '$lib/server/addJpyData';
 import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
 import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
 import { insertToMongo } from '$lib/server/insertToMongo';
-import { makeSimulationData, payoutPeriods, withdrawalRates } from '$lib/server/makeSimulationData';
+import { makeSimulationData, withdrawalRates } from '$lib/server/makeSimulationData';
 import type { AcwiData } from '$lib/type/AcwiData';
 
 export const load = async () => {
@@ -28,9 +28,9 @@ export const load = async () => {
 	}
 
 	// 取崩しシミュレーション実行
-	const simulationResults = await makeSimulationData(acwiData);
+	const { simulationMeta, simulationResults } = await makeSimulationData(acwiData);
 
-	return { simulationResults, payoutPeriods, withdrawalRates };
+	return { withdrawalRates, simulationMeta, simulationResults };
 };
 
 export const prerender = true;
