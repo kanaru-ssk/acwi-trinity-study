@@ -14,8 +14,10 @@ export const load = async () => {
 			message: 'Not found'
 		});
 
-	// MSCIから最新チャートデータフェッチ
+	const firstDataDate = acwiData[0].date;
 	const lastDataDate = acwiData[acwiData.length - 1].date;
+
+	// MSCIから最新チャートデータフェッチ
 	const latestData = await fetchAcwiDataFromMsci(lastDataDate);
 
 	if (latestData) {
@@ -35,7 +37,7 @@ export const load = async () => {
 	// 取崩しシミュレーション実行
 	const { simulationMeta, simulationResults } = await makeSimulationData(acwiData);
 
-	return { withdrawalRates, simulationMeta, simulationResults };
+	return { withdrawalRates, simulationMeta, simulationResults, firstDataDate, lastDataDate };
 };
 
 export const prerender = true;

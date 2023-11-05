@@ -28,5 +28,10 @@
 
 	<SimulationTable {data} />
 
+	{data.firstDataDate.toLocaleDateString('ja-JP', { timeZone: 'Europe/London' })}
+	~
+	{data.lastDataDate.toLocaleDateString('ja-JP', { timeZone: 'Europe/London' })}
+	のデータを使用してシミュレーションしています。
+
 	<DescriptionSections />
 </main>
