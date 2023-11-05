@@ -7,6 +7,8 @@
 		position: sticky;
 		top: 0;
 		padding: 12px 16px;
+		z-index: 100;
+		backdrop-filter: blur(8px);
 	}
 
 	img {
