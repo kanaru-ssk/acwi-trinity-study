@@ -30,6 +30,12 @@
 </main>
 
 <style>
+	main {
+		max-width: 896px;
+		margin: 0 auto;
+		padding: 0 16px;
+	}
+
 	h1 {
 		font-size: 24px;
 		margin-bottom: 0;
