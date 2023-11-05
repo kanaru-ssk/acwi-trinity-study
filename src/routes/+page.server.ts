@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit';
 import { addJpyData } from '$lib/server/addJpyData';
 import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
 import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
@@ -8,6 +9,10 @@ import type { AcwiData } from '$lib/type/AcwiData';
 export const load = async () => {
 	// MongoDBからチャートデータフェッチ
 	const acwiData = await fetchAcwiDataFromMongo();
+	if (!acwiData)
+		throw error(404, {
+			message: 'Not found'
+		});
 
 	// MSCIから最新チャートデータフェッチ
 	const lastDataDate = acwiData[acwiData.length - 1].date;
