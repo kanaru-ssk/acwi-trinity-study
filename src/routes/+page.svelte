@@ -27,23 +27,3 @@
 
 	<SimulationTable {data} />
 </main>
-
-<style>
-	main {
-		max-width: 896px;
-		margin: 0 auto;
-		padding: 0 16px;
-	}
-
-	h1 {
-		font-size: 18px;
-		margin-bottom: 32px;
-	}
-
-	@media (min-width: 640px) {
-		h1 {
-			font-size: 24px;
-			margin-bottom: 32px;
-		}
-	}
-</style>
