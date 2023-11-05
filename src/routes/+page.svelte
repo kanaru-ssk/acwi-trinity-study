@@ -24,7 +24,6 @@
 
 <main>
 	<h1>{title}</h1>
-	<p>{description}</p>
 
 	<SimulationTable {data} />
 </main>
@@ -37,7 +36,14 @@
 	}
 
 	h1 {
-		font-size: 24px;
-		margin-bottom: 0;
+		font-size: 18px;
+		margin-bottom: 32px;
+	}
+
+	@media (min-width: 640px) {
+		h1 {
+			font-size: 24px;
+			margin-bottom: 32px;
+		}
 	}
 </style>
