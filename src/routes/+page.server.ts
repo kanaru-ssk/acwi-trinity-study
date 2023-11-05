@@ -1,44 +1,35 @@
+import { addJpyData } from '$lib/server/addJpyData';
 import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
 import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
-import { fetchExchangeRate } from '$lib/server/fetchExchangeRate';
 import { insertToMongo } from '$lib/server/insertToMongo';
 import { makeSimulationData, payoutPeriods, withdrawalRates } from '$lib/server/makeSimulationData';
 import type { AcwiData } from '$lib/type/AcwiData';
+
 export const prerender = true;
 
 export const load = async () => {
+	// MongoDBからチャートデータフェッチ
 	const acwiData = await fetchAcwiDataFromMongo();
 
+	// MSCIから最新チャートデータフェッチ
 	const lastDataDate = acwiData[acwiData.length - 1].date;
-
 	const latestData = await fetchAcwiDataFromMsci(lastDataDate);
 
 	if (latestData) {
-		const newAcwiData: (AcwiData | null)[] = await Promise.all(
-			latestData.map(async ({ date, price_usd }) => {
-				const jpy_usd = await fetchExchangeRate(date);
-				if (!jpy_usd) return null;
+		// MSCIデータに日本円データ追加
+		const newAcwiData: AcwiData[] = await addJpyData(latestData);
 
-				const price_jpy = price_usd * jpy_usd;
-				return {
-					date,
-					price_usd,
-					price_jpy,
-					jpy_usd
-				};
-			})
-		);
-
+		// 最新チャートデータをMongoDBに追加
+		// acwiDataに最新データ追加
 		await Promise.all(
-			newAcwiData.map(async (v) => {
-				if (v) {
-					const insertedData = await insertToMongo(v);
-					acwiData.push(insertedData);
-				}
+			newAcwiData.map(async (data) => {
+				const insertedData = await insertToMongo(data);
+				acwiData.push(insertedData);
 			})
 		);
 	}
 
+	// 取崩しシミュレーション実行
 	const simulationResults = await makeSimulationData(acwiData);
 
 	return { simulationResults, payoutPeriods, withdrawalRates };
