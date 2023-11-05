@@ -12,7 +12,6 @@ export const load = async () => {
 	const lastDataDate = acwiData[acwiData.length - 1].date;
 
 	const latestData = await fetchAcwiDataFromMsci(lastDataDate);
-	console.log('latestData : ', latestData);
 
 	if (latestData) {
 		const newAcwiData: (AcwiData | null)[] = await Promise.all(
@@ -29,14 +28,12 @@ export const load = async () => {
 				};
 			})
 		);
-		console.log('newAcwiData : ', newAcwiData);
 
 		await Promise.all(
 			newAcwiData.map(async (v) => {
 				if (v) {
 					const insertedData = await insertToMongo(v);
 					acwiData.push(insertedData);
-					console.log('insertedData : ', insertedData);
 				}
 			})
 		);
