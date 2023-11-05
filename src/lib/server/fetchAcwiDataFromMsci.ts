@@ -1,6 +1,7 @@
 import type { AcwiData } from '$lib/type/AcwiData';
 import { isAcwiDataFromMsci } from '$lib/type/AcwiDataFromMsci';
 
+// MSCI API から最新のACWIチャートデータをフェッチ
 export const fetchAcwiDataFromMsci = async (
 	lastDataDate: Date
 ): Promise<Omit<AcwiData, 'price_jpy' | 'jpy_usd'>[] | null> => {

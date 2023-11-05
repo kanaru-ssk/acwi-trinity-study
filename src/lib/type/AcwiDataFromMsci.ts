@@ -1,4 +1,5 @@
-type AcwiDataFromMsci = {
+// MSCI API のレスポンス形式
+export type AcwiDataFromMsci = {
 	msci_index_code: string;
 	index_variant_type: string;
 	ISO_currency_symbol: string;

@@ -1,6 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { isExchangeRateApiRes } from '$lib/type/ExchangeRateApiRes';
 
+// Exchange Rate API から指定日のドル円レートをフェッチ
 export const fetchExchangeRate = async (date: Date): Promise<number | null> => {
 	const endpoint = 'http://api.exchangeratesapi.io/v1';
 	const targetDateStr = date.toISOString().split('T')[0];

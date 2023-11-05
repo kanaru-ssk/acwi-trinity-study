@@ -1,3 +1,4 @@
+// Exchange Rate API のレスポンス形式
 export type ExchangeRateApiRes = {
 	success: boolean;
 	timestamp: number;
