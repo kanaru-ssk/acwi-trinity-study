@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SimulationTable from '$lib/components/SimulationTable.svelte';
+	import DescriptionSections from '$lib/components/DescriptionSections.svelte';
 	export let data;
 
 	const year = new Date().getFullYear();
@@ -26,4 +27,6 @@
 	<h1>{title}</h1>
 
 	<SimulationTable {data} />
+
+	<DescriptionSections />
 </main>
