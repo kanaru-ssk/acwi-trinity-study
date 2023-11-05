@@ -1,7 +1,9 @@
 import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
 import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
+import { fetchExchangeRate } from '$lib/server/fetchExchangeRate';
+import { insertToMongo } from '$lib/server/insertToMongo';
 import { makeSimulationData, payoutPeriods, withdrawalRates } from '$lib/server/makeSimulationData';
-
+import type { AcwiData } from '$lib/type/AcwiData';
 export const prerender = true;
 
 export const load = async () => {
@@ -9,10 +11,36 @@ export const load = async () => {
 
 	const lastDataDate = acwiData[acwiData.length - 1].date;
 
-	const originData = await fetchAcwiDataFromMsci(lastDataDate);
-	console.log(originData);
-	// TODO: 最新データがある場合は為替データ取得
-	// TODO: 最新データをMongoDBにinsert
+	const latestData = await fetchAcwiDataFromMsci(lastDataDate);
+	console.log('latestData : ', latestData);
+
+	if (latestData) {
+		const newAcwiData: (AcwiData | null)[] = await Promise.all(
+			latestData.map(async ({ date, price_usd }) => {
+				const jpy_usd = await fetchExchangeRate(date);
+				if (!jpy_usd) return null;
+
+				const price_jpy = price_usd * jpy_usd;
+				return {
+					date,
+					price_usd,
+					price_jpy,
+					jpy_usd
+				};
+			})
+		);
+		console.log('newAcwiData : ', newAcwiData);
+
+		await Promise.all(
+			newAcwiData.map(async (v) => {
+				if (v) {
+					const insertedData = await insertToMongo(v);
+					acwiData.push(insertedData);
+					console.log('insertedData : ', insertedData);
+				}
+			})
+		);
+	}
 
 	const simulationResults = await makeSimulationData(acwiData);
 
