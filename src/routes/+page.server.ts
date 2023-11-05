@@ -5,8 +5,6 @@ import { insertToMongo } from '$lib/server/insertToMongo';
 import { makeSimulationData, payoutPeriods, withdrawalRates } from '$lib/server/makeSimulationData';
 import type { AcwiData } from '$lib/type/AcwiData';
 
-export const prerender = true;
-
 export const load = async () => {
 	// MongoDBからチャートデータフェッチ
 	const acwiData = await fetchAcwiDataFromMongo();
@@ -33,4 +31,12 @@ export const load = async () => {
 	const simulationResults = await makeSimulationData(acwiData);
 
 	return { simulationResults, payoutPeriods, withdrawalRates };
+};
+
+export const prerender = true;
+
+export const config = {
+	isr: {
+		expiration: 60 * 60 * 24 * 30 // 30日毎にデータ更新
+	}
 };
