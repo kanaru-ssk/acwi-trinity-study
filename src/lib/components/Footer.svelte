@@ -4,8 +4,6 @@
 
 <style>
 	footer {
-		position: sticky;
-		bottom: 0;
 		background-color: #000;
 		padding: 32px;
 	}
