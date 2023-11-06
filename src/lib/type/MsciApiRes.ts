@@ -1,5 +1,5 @@
 // MSCI API のレスポンス形式
-export type AcwiDataFromMsci = {
+export type MsciApiRes = {
 	msci_index_code: string;
 	index_variant_type: string;
 	ISO_currency_symbol: string;
@@ -11,7 +11,7 @@ export type AcwiDataFromMsci = {
 	};
 };
 
-export const isAcwiDataFromMsci = (data: unknown): data is AcwiDataFromMsci => {
+export const isMsciApiRes = (data: unknown): data is MsciApiRes => {
 	return (
 		typeof data === 'object' &&
 		data !== null &&
