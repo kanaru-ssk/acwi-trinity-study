@@ -1,0 +1,41 @@
+body {
+	margin: 0;
+}
+
+main {
+	max-width: 896px;
+	margin: 0 auto;
+	padding: 0 16px;
+	min-height: calc(100vh - 168px);
+}
+
+h1 {
+	font-size: 20px;
+	margin-bottom: 32px;
+}
+
+h2 {
+	font-size: 18px;
+	border-left: solid 4px #000;
+	padding-left: 16px;
+}
+
+h3 {
+	font-size: 16px;
+	margin-top: 24px;
+}
+
+p {
+	line-height: 28px;
+}
+
+@media (min-width: 640px) {
+	h1 {
+		font-size: 24px;
+		margin-bottom: 32px;
+	}
+
+	h2 {
+		font-size: 18px;
+	}
+}

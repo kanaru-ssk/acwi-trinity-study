@@ -1,5 +1,5 @@
 import type { AcwiData } from '$lib/type/AcwiData';
-import { isAcwiDataFromMsci } from '$lib/type/AcwiDataFromMsci';
+import { isMsciApiRes } from '$lib/type/MsciApiRes';
 
 // MSCI API から最新のACWIチャートデータをフェッチ
 export const fetchAcwiDataFromMsci = async (
@@ -23,7 +23,7 @@ export const fetchAcwiDataFromMsci = async (
 	if (!res.ok) return null;
 
 	const data: unknown = await res.json();
-	if (!isAcwiDataFromMsci(data)) return null;
+	if (!isMsciApiRes(data)) return null;
 
 	return data.indexes.INDEX_LEVELS.map((level) => {
 		const date = toDate(String(level.calc_date));

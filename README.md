@@ -1,38 +1,119 @@
-# create-svelte
+# Trinity Study
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+MSCI ACWI を日本円建てで取崩しシミュレーションした日本版トリニティスタディ。
+毎月最新データを自動的に取得し、シミュレーション結果を更新します。
 
-## Creating a project
+![png](./static/screenshot.png)
 
-If you're seeing this, you've probably already done this step. Congrats!
+[シミュレーション結果はこちら](https://trinity-study.kanaru.jp)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## トリニティスタディとは？
 
-# create a new project in my-app
-npm create svelte@latest my-app
+1998 年、[THE AAII JOURNAL](https://www.aaii.com/journal) に掲載された以下の論文の通称。
+
+[Retirement Savings: Choosing a Withdrawal Rate That Is Sustainable](https://www.aaii.com/files/pdf/6794_retirement-savings-choosing-a-withdrawal-rate-that-is-sustainable.pdf)
+
+現役時に貯めた資産を取り崩して生活する退職者を想定し、株式および債権で運用された資産の安全な取崩し率を調べている。
+
+この論文では株式に S&P500(アメリカの株式インデックス)、債権にアメリカの長期高格付け社債を使用してシミュレーションしている。
+
+本サイトでは、日本人向けとして ACWI(全世界株式インデックス)を日本円建てで取崩すシミュレーションをした。
+
+## シミュレーションアルゴリズム
+
+### 3%で 15 年間取り崩す場合
+
+```
+取崩し額 = 初年度資産残高 * 0.03
+
+1年目 : 資産残高 = 資産残高 - 取崩し額
+
+2年目 : 騰落率 = 2年目の基準価格 / 1年目の基準価格
+       資産残高 = 資産残高 * 騰落率 - 取崩し額
+
+3年目 : 騰落率 = 3年目の基準価格 / 2年目の基準価格
+       資産残高 = 資産残高 * 騰落率 - 取崩し額
+
+4年目 : 騰落率 = 4年目の基準価格 / 3年目の基準価格
+       資産残高 = 資産残高 * 騰落率 - 取崩し額
+...
+
+15年目 : 騰落率 = 15年目の基準価格 / 14年目の基準価格
+       資産残高 = 資産残高 * 騰落率 - 取崩し額
+
+15年間資産が0にならなければ成功。
+
+成功率 = 成功回数 / 試行回数
 ```
 
-## Developing
+### 試行回数について
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+以下条件の場合の試行回数で説明
 
-```bash
-npm run dev
+- 15 年間取崩す
+- 1987 年 12 月 ~ 2023 年 10 月までの 431 ヶ月分のデータが取得できている
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+以下のように、取崩し月をひと月ずつずらしてシミュレーションしていく。
+
+```
+1回目 : 1987/12、1988/12、1989/12、... 2001/12
+2回目 : 1988/01、1989/01、1990/01、... 2002/01
+3回目 : 1988/02、1989/02、1990/02、... 2002/02
+...
+252回目 : 2009/10、2010/10、2011/10、... 2023/10
+
+252 = 1 + 431 - 12 * 15
+
+試行回数 = 1 + (データ月数) - 12 * (取崩し期間)
 ```
 
-## Building
+なので、取崩し期間が短いほど試行回数が多くなっています。
 
-To create a production version of your app:
+### 実際のソースコード
 
-```bash
-npm run build
+[makeSimulationData.ts](./src/lib/server/makeSimulationData.ts)に記載されています。
+
+```javascript
+const simulate = (
+	acwiData, // ACWIチャートデータ
+	payoutPeriod, // 取崩し期間
+	withdrawalRate, // 取崩し率
+	numOfSimulation // 試行回数
+) => {
+	let countFailure = 0; // 失敗回数
+	for (let i = 0; i < numOfSimulation; i++) {
+		let amountRemaining = acwiData[i].price_jpy; // 資産残高
+
+		// 毎年の取崩し額: 初年度の資産額に取崩し率をかけた額
+		const withdrawals = amountRemaining * withdrawalRate * 0.01;
+		for (let pi = 0; pi < payoutPeriod; pi++) {
+			if (pi !== 0) {
+				const prePrice = acwiData[i + 12 * (pi - 1)].price_jpy; // 1年前の基準価格
+				const price = acwiData[i + 12 * pi].price_jpy; // 当月の基準価格
+				const PercentageChange = price / prePrice; // 騰落率
+
+				// 資産残高に騰落率を掛ける
+				amountRemaining *= PercentageChange;
+			}
+
+			// 資産残高から取崩し額を引く
+			amountRemaining -= withdrawals;
+
+			// 資産残高が0になったら失敗
+			if (amountRemaining <= 0) {
+				countFailure++;
+				break;
+			}
+		}
+	}
+
+	// 成功率 = (試行回数 - 失敗回数) / 試行回数
+	return (numOfSimulation - countFailure) / numOfSimulation;
+};
 ```
 
-You can preview the production build with `npm run preview`.
+## データ入手元
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+ACWI のチャートデータ : [End of day index data search](https://www.msci.com/end-of-day-data-search)
+
+ドル円為替データ : [exchangerates API](https://exchangeratesapi.io/)
