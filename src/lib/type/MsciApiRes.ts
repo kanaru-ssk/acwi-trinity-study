@@ -11,18 +11,15 @@ export type MsciApiRes = {
 	};
 };
 
-export const isMsciApiRes = (data: unknown): data is MsciApiRes => {
-	return (
-		typeof data === 'object' &&
-		data !== null &&
-		'indexes' in data &&
-		typeof data.indexes === 'object' &&
-		data.indexes !== null &&
-		'INDEX_LEVELS' in data.indexes &&
-		Array.isArray(data.indexes.INDEX_LEVELS) &&
-		data.indexes.INDEX_LEVELS.every(
-			(level: unknown) =>
-				typeof level === 'object' && level && 'level_eod' in level && 'calc_date' in level
-		)
+export const isMsciApiRes = (data: unknown): data is MsciApiRes =>
+	typeof data === 'object' &&
+	data !== null &&
+	'indexes' in data &&
+	typeof data.indexes === 'object' &&
+	data.indexes !== null &&
+	'INDEX_LEVELS' in data.indexes &&
+	Array.isArray(data.indexes.INDEX_LEVELS) &&
+	data.indexes.INDEX_LEVELS.every(
+		(level: unknown) =>
+			typeof level === 'object' && level && 'level_eod' in level && 'calc_date' in level
 	);
-};
