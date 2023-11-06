@@ -6,6 +6,8 @@
 			numOfSimulation: number;
 		}[];
 		simulationResults: number[][];
+		firstDataDate: Date;
+		lastDataDate: Date;
 	};
 </script>
 
@@ -38,6 +40,13 @@
 	</table>
 </div>
 
+<p>
+	{data.firstDataDate.toLocaleDateString('ja-JP', { timeZone: 'Europe/London' })}
+	~
+	{data.lastDataDate.toLocaleDateString('ja-JP', { timeZone: 'Europe/London' })}
+	のデータを使用してシミュレーションしています。
+</p>
+
 <style>
 	div {
 		display: block;
@@ -56,6 +65,11 @@
 	th,
 	td {
 		padding: 4px 16px;
+	}
+
+	p {
+		margin-top: 4px;
+		font-size: 12px;
 	}
 
 	.left-header {
