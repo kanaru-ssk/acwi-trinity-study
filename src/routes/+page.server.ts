@@ -4,7 +4,6 @@ import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
 import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
 import { insertToMongo } from '$lib/server/insertToMongo';
 import { makeSimulationData, withdrawalRates } from '$lib/server/makeSimulationData';
-import type { AcwiData } from '$lib/type/AcwiData';
 
 export const load = async () => {
 	// MongoDBからチャートデータフェッチ
@@ -22,7 +21,7 @@ export const load = async () => {
 
 	if (latestData) {
 		// MSCIデータに日本円データ追加
-		const newAcwiData: AcwiData[] = await addJpyData(latestData);
+		const newAcwiData = await addJpyData(latestData);
 
 		// 最新チャートデータをMongoDBに追加
 		// acwiDataに最新データ追加
