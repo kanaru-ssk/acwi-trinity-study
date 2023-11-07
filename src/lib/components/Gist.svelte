@@ -6,7 +6,7 @@
 	let frame: HTMLIFrameElement;
 
 	onMount(() => {
-		frame.srcdoc = `<script src='${gistUrl}'><\/script>`;
+		frame.srcdoc = `<script src='${gistUrl}'><${''}/script>`;
 	});
 </script>
 
