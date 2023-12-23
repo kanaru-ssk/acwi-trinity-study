@@ -1,6 +1,5 @@
 <script lang="ts">
-	import SimulationTable from '$lib/components/SimulationTable.svelte';
-	import DescriptionSections from '$lib/components/DescriptionSections.svelte';
+	import { DescriptionSections, SimulationTable } from '$lib/components';
 	export let data;
 
 	const year = new Date().getFullYear();

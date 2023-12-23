@@ -1,13 +1,16 @@
 import { error } from '@sveltejs/kit';
-import { addJpyData } from '$lib/server/addJpyData';
-import { fetchAcwiDataFromMongo } from '$lib/server/fetchAcwiDataFromMongo';
-import { fetchAcwiDataFromMsci } from '$lib/server/fetchAcwiDataFromMsci';
-import { insertToMongo } from '$lib/server/insertToMongo';
-import { makeSimulationData, withdrawalRates } from '$lib/server/makeSimulationData';
+import {
+	fetchAcwiChartFromMongo,
+	insertChartToMongo,
+	addJpyData,
+	fetchAcwiChart,
+	makeSimulation,
+	withdrawalRates
+} from '$lib/server';
 
 export const load = async () => {
 	// MongoDBからチャートデータフェッチ
-	const acwiData = await fetchAcwiDataFromMongo();
+	const acwiData = await fetchAcwiChartFromMongo();
 	if (!acwiData)
 		throw error(404, {
 			message: 'Not found'
@@ -17,7 +20,7 @@ export const load = async () => {
 	const lastDataDate = acwiData[acwiData.length - 1].date;
 
 	// MSCIから最新チャートデータフェッチ
-	const latestData = await fetchAcwiDataFromMsci(lastDataDate);
+	const latestData = await fetchAcwiChart(lastDataDate);
 
 	if (latestData) {
 		// MSCIデータに日本円データ追加
@@ -27,14 +30,14 @@ export const load = async () => {
 		// acwiDataに最新データ追加
 		await Promise.all(
 			newAcwiData.map(async (data) => {
-				const insertedData = await insertToMongo(data);
+				const insertedData = await insertChartToMongo(data);
 				acwiData.push(insertedData);
 			})
 		);
 	}
 
 	// 取崩しシミュレーション実行
-	const { simulationMeta, simulationResults } = await makeSimulationData(acwiData);
+	const { simulationMeta, simulationResults } = await makeSimulation(acwiData);
 
 	return { withdrawalRates, simulationMeta, simulationResults, firstDataDate, lastDataDate };
 };

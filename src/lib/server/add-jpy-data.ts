@@ -1,5 +1,5 @@
 import type { AcwiData } from '$lib/type/AcwiData';
-import { fetchExchangeRate } from '$lib/server/fetchExchangeRate';
+import { fetchExchangeRate } from '$lib/server/fetch-exchange-rate';
 
 // Exchange Rate API からドル円レートをフェッチし、AcwiDataを完成させる
 export const addJpyData = async (

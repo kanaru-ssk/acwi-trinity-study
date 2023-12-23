@@ -6,7 +6,7 @@ export const withdrawalRates = [3, 4, 5, 6, 7, 8, 9, 10];
 // 取崩しシミュレーションデータを作成
 // simulationMeta : 取崩し期間とシミュレーション回数の配列
 // simulationResults : 取崩し期間と取崩し率の二元配列
-export const makeSimulationData = async (acwiData: AcwiData[]) => {
+export const makeSimulation = async (acwiData: AcwiData[]) => {
 	const simulationMeta = payoutPeriods.map((payoutPeriod) => ({
 		payoutPeriod,
 		numOfSimulation: 1 + acwiData.length - 12 * payoutPeriod

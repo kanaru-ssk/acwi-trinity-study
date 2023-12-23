@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Gist from '$lib/components/Gist.svelte';
+	import Gist from '$lib/components/gist.svelte';
 </script>
 
 <article>
