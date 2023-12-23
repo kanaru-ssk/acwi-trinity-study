@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import {
 	fetchAcwiChartFromMongo,
 	insertChartToMongo,
@@ -20,7 +21,7 @@ export const load = async () => {
 	const lastDataDate = acwiData[acwiData.length - 1].date;
 
 	// MSCIから最新チャートデータフェッチ
-	const latestData = await fetchAcwiChart(lastDataDate);
+	const latestData = !dev && (await fetchAcwiChart(lastDataDate));
 
 	if (latestData) {
 		// MSCIデータに日本円データ追加
