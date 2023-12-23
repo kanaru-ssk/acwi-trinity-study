@@ -17,7 +17,7 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
 
   const simulationMeta = payoutPeriods.map((payoutPeriod) => ({
     payoutPeriod,
-    numOfSimulation: 1 + acwiData.length - 12 * payoutPeriod,
+    numOfSimulation: acwiData.length - 12 * (payoutPeriod - 1),
   }));
 
   const simulationResults = simulationMeta.map(
