@@ -1,2 +1,2 @@
-export * from './fetch-acwi-chart-from-mongo';
-export * from './insert-chart-to-mongo';
+export * from "./fetch-acwi-chart-from-mongo";
+export * from "./insert-chart-to-mongo";
