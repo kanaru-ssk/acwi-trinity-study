@@ -1,6 +1,6 @@
 import type { AcwiData } from "$lib/type/AcwiData";
 
-export const withdrawalRates = [3, 4, 5, 6, 7, 8, 9, 10];
+export const withdrawalRates = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 // 取崩しシミュレーションデータを作成
 // simulationMeta : 取崩し期間とシミュレーション回数の配列
@@ -44,15 +44,17 @@ const simulate = (
 
     // 毎年の取崩し額: 初年度の資産額に取崩し率をかけた額
     const withdrawals = amountRemaining * withdrawalRate * 0.01;
-    for (let pi = 0; pi < payoutPeriod; pi++) {
-      if (pi !== 0) {
-        const prePrice = acwiData[i + 12 * (pi - 1)].price_jpy; // 1年前の基準価格
-        const price = acwiData[i + 12 * pi].price_jpy; // 当月の基準価格
-        const PercentageChange = price / prePrice; // 騰落率
 
-        // 資産残高に騰落率を掛ける
-        amountRemaining *= PercentageChange;
-      }
+    // 初年度の取り崩し
+    amountRemaining -= withdrawals;
+
+    for (let pi = 1; pi < payoutPeriod; pi++) {
+      const prePrice = acwiData[i + 12 * (pi - 1)].price_jpy; // 1年前の基準価格
+      const price = acwiData[i + 12 * pi].price_jpy; // 当月の基準価格
+      const PercentageChange = price / prePrice; // 騰落率
+
+      // 資産残高に騰落率を掛ける
+      amountRemaining *= PercentageChange;
 
       // 資産残高から取崩し額を引く
       amountRemaining -= withdrawals;
