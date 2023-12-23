@@ -42,7 +42,9 @@ export const load = async () => {
   // 取崩しシミュレーション実行
   const { simulationMeta, simulationResults } = await makeSimulation(acwiData);
 
-  const updateDate = new Date().toLocaleDateString();
+  const updateDate = new Date().toLocaleDateString("ja-JP", {
+    timeZone: "UTC",
+  });
 
   return {
     withdrawalRates,
