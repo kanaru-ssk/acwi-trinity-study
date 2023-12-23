@@ -40,12 +40,15 @@ export const load = async () => {
   // 取崩しシミュレーション実行
   const { simulationMeta, simulationResults } = await makeSimulation(acwiData);
 
+  const updateDate = new Date().toLocaleDateString()
+
   return {
     withdrawalRates,
     simulationMeta,
     simulationResults,
     firstDataDate,
     lastDataDate,
+    updateDate
   };
 };
 

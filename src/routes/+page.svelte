@@ -28,8 +28,7 @@
 
 <main class="mx-auto max-w-4xl px-4">
   <Heading1>{title}</Heading1>
-
+  <p class="my-4 text-sm">※更新日 : {data.updateDate}</p>
   <SimulationTable {data} />
-
   <DescriptionSections />
 </main>
