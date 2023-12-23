@@ -35,7 +35,10 @@
           {@const r = result < 0.5 ? 255 : 255 - 155 * 2 * (result - 0.5)}
           {@const g = result > 0.5 ? 255 : 100 + 155 * 2 * result}
           {@const b = 100}
-          <td style:background-color="rgb({r},{g},{b})" class="px-4 py-1">
+          <td
+            style:background-color="rgb({r},{g},{b})"
+            class="px-4 py-1 text-center"
+          >
             {Math.floor(100 * result)}
           </td>
         {/each}
