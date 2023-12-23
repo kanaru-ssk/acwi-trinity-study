@@ -1,12 +1,20 @@
 import type { AcwiData } from "$lib/type/AcwiData";
 
-export const payoutPeriods = [15, 20, 25, 30];
 export const withdrawalRates = [3, 4, 5, 6, 7, 8, 9, 10];
 
 // 取崩しシミュレーションデータを作成
 // simulationMeta : 取崩し期間とシミュレーション回数の配列
 // simulationResults : 取崩し期間と取崩し率の二元配列
 export const makeSimulation = async (acwiData: AcwiData[]) => {
+  // データの年数からシミュレーション可能な取り崩し期間を算出
+  // 取り崩し期間は15年以上で5年区切り
+  const numYearOfData = Math.floor(432 / 12);
+  const numSimulate = Math.floor(numYearOfData / 5) - 2;
+  const payoutPeriods = Array.from(
+    { length: numSimulate },
+    (_, i) => i * 5 + 15,
+  );
+
   const simulationMeta = payoutPeriods.map((payoutPeriod) => ({
     payoutPeriod,
     numOfSimulation: 1 + acwiData.length - 12 * payoutPeriod,
