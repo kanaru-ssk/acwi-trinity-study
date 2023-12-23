@@ -46,9 +46,9 @@
 
 <p class="mt-1 text-xs">
   {data.firstDataDate.toLocaleDateString("ja-JP", {
-    timeZone: "Europe/London",
+    timeZone: "UTC",
   })}
   ~
-  {data.lastDataDate.toLocaleDateString("ja-JP", { timeZone: "Europe/London" })}
+  {data.lastDataDate.toLocaleDateString("ja-JP", { timeZone: "UTC" })}
   のデータを使用してシミュレーションしています。
 </p>

@@ -5,8 +5,9 @@ import { isMsciApiRes } from "$lib/type/MsciApiRes";
 export const fetchAcwiChart = async (
   lastDataDate: Date,
 ): Promise<Omit<AcwiData, "price_jpy" | "jpy_usd">[] | null> => {
-  lastDataDate.setDate(lastDataDate.getDate() + 1);
-  const lastDataDateStr = toNoBreakStr(lastDataDate);
+  const cloneLastDataDate = new Date(lastDataDate);
+  cloneLastDataDate.setDate(cloneLastDataDate.getDate() + 1);
+  const lastDataDateStr = toNoBreakStr(cloneLastDataDate);
   const latestWeekDayStr = toNoBreakStr(getNextWeekDay(new Date()));
 
   const endpoint =
@@ -49,7 +50,7 @@ const toDate = (noBreakStr: string): Date => {
   const yearStr = noBreakStr.slice(0, 4);
   const monthStr = noBreakStr.slice(4, 6);
   const dayStr = noBreakStr.slice(6);
-  const dateStr = `${yearStr}/${monthStr}/${dayStr}`;
+  const dateStr = `${yearStr}/${monthStr}/${dayStr}Z`;
   return new Date(dateStr);
 };
 

@@ -18,7 +18,7 @@ export const load = async () => {
     });
 
   const firstDataDate = acwiData[0].date;
-  const lastDataDate = acwiData[acwiData.length - 1].date;
+  let lastDataDate = acwiData[acwiData.length - 1].date;
 
   // MSCIから最新チャートデータフェッチ
   const latestData = !dev && (await fetchAcwiChart(lastDataDate));
@@ -35,12 +35,14 @@ export const load = async () => {
         acwiData.push(insertedData);
       }),
     );
+
+    lastDataDate = acwiData[acwiData.length - 1].date;
   }
 
   // 取崩しシミュレーション実行
   const { simulationMeta, simulationResults } = await makeSimulation(acwiData);
 
-  const updateDate = new Date().toLocaleDateString()
+  const updateDate = new Date().toLocaleDateString();
 
   return {
     withdrawalRates,
@@ -48,7 +50,7 @@ export const load = async () => {
     simulationResults,
     firstDataDate,
     lastDataDate,
-    updateDate
+    updateDate,
   };
 };
 
