@@ -23,7 +23,7 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
   const simulationResults = simulationMeta.map(
     ({ payoutPeriod, numOfSimulation }) =>
       withdrawalRates.map((withdrawalRate) =>
-        simulate(acwiData, payoutPeriod, withdrawalRate, numOfSimulation),
+        simulate(acwiData, payoutPeriod, numOfSimulation, withdrawalRate),
       ),
   );
 
@@ -35,8 +35,8 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
 const simulate = (
   acwiData: AcwiData[],
   payoutPeriod: number,
-  withdrawalRate: number,
   numOfSimulation: number,
+  withdrawalRate: number,
 ) => {
   let countFailure = 0; // 失敗回数
   for (let i = 0; i < numOfSimulation; i++) {
