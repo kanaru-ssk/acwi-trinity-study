@@ -12,13 +12,13 @@
 <article>
   <Section>
     <Heading2>当サイトについて</Heading2>
-    <Paragraph
-      >MSCI ACWI
-      を日本円建てで取崩しシミュレーションした日本版トリニティスタディです。</Paragraph
-    >
-    <Paragraph
-      >毎月最新データを自動的に取得し、シミュレーション結果を更新しています。</Paragraph
-    >
+    <Paragraph>
+      MSCI
+      ACWIを日本円建てで取崩しシミュレーションした日本版トリニティスタディです。
+    </Paragraph>
+    <Paragraph>
+      毎月最新データを自動的に取得し、シミュレーション結果を更新しています。
+    </Paragraph>
   </Section>
 
   <Section>
@@ -64,68 +64,44 @@
       で公開しています。ソースコード内の
       <Link
         text="makeSimulationData.ts"
-        href="https://github.com/kanaru-ssk/trinity-study/blob/main/src/lib/server/makeSimulationData.ts"
+        href="https://github.com/kanaru-ssk/trinity-study/blob/main/src/lib/server/make-simulation.ts"
         target="_blank"
       />
       で実際に動いているシミュレーションアルゴリズムをご確認頂けます。
     </Paragraph>
-
-    <Heading3>例:3%で15年間取崩す場合</Heading3>
-    <Paragraph>取崩し額 = 初年度資産残高 * 0.03</Paragraph>
-    <p />
-    <dl>
-      <dt>1年目</dt>
-      <dd>資産残高 = 資産残高 - 取崩し額</dd>
-    </dl>
-    <dl>
-      <dt>2年目</dt>
-      <dd>騰落率 = 2年目の基準価格 / 1年目の基準価格</dd>
-      <dd>資産残高 = 資産残高 * 騰落率 - 取崩し額</dd>
-    </dl>
-    <dl>
-      <dt>3年目</dt>
-      <dd>騰落率 = 3年目の基準価格 / 2年目の基準価格</dd>
-      <dd>資産残高 = 資産残高 * 騰落率 - 取崩し額</dd>
-    </dl>
-    <Paragraph>...</Paragraph>
-    <dl>
-      <dt>15年目</dt>
-      <dd>騰落率 = 15年目の基準価格 / 14年目の基準価格</dd>
-      <dd>資産残高 = 資産残高 * 騰落率 - 取崩し額</dd>
-    </dl>
-    <Paragraph>15年間資産が0にならなければ成功。</Paragraph>
-    <Paragraph>成功率 = 成功回数 / 試行回数</Paragraph>
-
+    <Paragraph>
+      上記ファイルの関数で以下の手順でシミュレーションしています。
+    </Paragraph>
+    <ol class="list-decimal space-y-2 pl-8">
+      <li>
+        初年度の資産額を100に設定。毎年の取り崩し額は取り崩し率の数値（5%取り崩しの場合5）となる。
+      </li>
+      <li>初年度はそのまま取り崩し(100 – 5で資産残高95)</li>
+      <li>
+        2年目以降は資産残高に騰落率をかけて時価を計算し、そこから取り崩す。（10%値上がりした場合、95*1.1–5=99.5）
+      </li>
+      <li>3を取り崩し年数分繰り返し、資産残高が0にならなければ成功とする。</li>
+    </ol>
     <Heading3>試行回数について</Heading3>
-    <Paragraph>以下条件の場合の試行回数で説明します。</Paragraph>
-    <ul>
-      <li>15年間取崩す</li>
-      <li>1987年12月 ~ 2023年10月までの431ヶ月分のデータが取得できている</li>
+    <Paragraph>上の操作をデータ数が許す限り繰り返す。</Paragraph>
+    <Paragraph>
+      例えば、1987年12月から2023年11月のデータを取得出来ている場合、15年の取り崩し年数でシミュレーションする回数は以下のようになる。
+    </Paragraph>
+    <ul class="list-disc space-y-2 pl-8">
+      <li>1回目、1987年12月から2001年12月。</li>
+      <li>2回目、1988年1月から2002年1月。</li>
+      <li>3回目、1988年2月から2002年2月。</li>
+      <li>...</li>
+      <li>263回目、2009年10月から2023年10月。</li>
+      <li>264回目、2009年11月から2023年11月。</li>
     </ul>
-    <Paragraph
-      >以下のように、取崩し月をひと月ずつずらしてシミュレーションをおこなっています。</Paragraph
-    >
-    <dl>
-      <dt>1回目</dt>
-      <dd>1987/12、1988/12、1989/12、... 2001/12</dd>
-    </dl>
-    <dl>
-      <dt>2回目</dt>
-      <dd>1988/01、1989/01、1990/01、... 2002/01</dd>
-    </dl>
-    <dl>
-      <dt>3回目</dt>
-      <dd>1988/02、1989/02、1990/02、... 2002/02</dd>
-    </dl>
-    <Paragraph>...</Paragraph>
-    <dl>
-      <dt>252回目</dt>
-      <dd>2009/10、2010/10、2011/10、... 2023/10</dd>
-    </dl>
-    <Paragraph>252 = 1 + 431 - 12 * 15</Paragraph>
-    <Paragraph>試行回数 = 1 + (データ月数) - 12 * (取崩し期間)</Paragraph>
-    <Paragraph>取崩し期間が短いほど試行回数が多くなっています。</Paragraph>
-
+    <Paragraph>
+      計算式にすると、
+      <code class="rounded-sm bg-neutral-200 px-2 py-1 text-xs">
+        (データ月数) - 12 * (取り崩し年数 - 1)
+      </code>
+      となる。
+    </Paragraph>
     <Heading3>実際のソースコードを抜粋</Heading3>
     <div class="h-[860px]">
       <Gist
