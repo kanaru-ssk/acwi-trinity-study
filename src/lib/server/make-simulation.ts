@@ -9,9 +9,9 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
   // データの年数からシミュレーション可能な取り崩し期間を算出
   // 取り崩し期間は15年以上で5年区切り
   const numYearOfData = Math.floor(acwiData.length / 12);
-  const numSimulate = Math.floor(numYearOfData / 5) - 2;
+  const numPayoutPeriod = Math.floor(numYearOfData / 5) - 2;
   const payoutPeriods = Array.from(
-    { length: numSimulate },
+    { length: numPayoutPeriod },
     (_, i) => i * 5 + 15,
   );
 
@@ -57,8 +57,8 @@ const simulate = (
       // 資産残高から取崩し額を引く
       amountRemaining -= withdrawalRate;
 
-      // 資産残高が0になったら失敗
-      if (amountRemaining <= 0) {
+      // 資産残高が0未満になったら失敗
+      if (amountRemaining < 0) {
         countFailure++;
         break;
       }

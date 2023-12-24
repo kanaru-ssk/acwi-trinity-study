@@ -103,7 +103,7 @@
       となる。
     </Paragraph>
     <Heading3>実際のソースコードを抜粋</Heading3>
-    <div class="h-[860px]">
+    <div class="h-[840px]">
       <Gist
         gistUrl="https://gist.github.com/kanaru-ssk/b463bcd3463b697f4ddc4123f0fe73e0.js"
       />
