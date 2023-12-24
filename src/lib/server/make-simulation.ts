@@ -23,7 +23,7 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
   const simulationResults = simulationMeta.map(
     ({ payoutPeriod, numOfSimulation }) =>
       withdrawalRates.map((withdrawalRate) =>
-        simulate(acwiData, payoutPeriod, withdrawalRate, numOfSimulation),
+        simulate(acwiData, payoutPeriod, numOfSimulation, withdrawalRate),
       ),
   );
 
@@ -35,18 +35,16 @@ export const makeSimulation = async (acwiData: AcwiData[]) => {
 const simulate = (
   acwiData: AcwiData[],
   payoutPeriod: number,
-  withdrawalRate: number,
   numOfSimulation: number,
+  withdrawalRate: number,
 ) => {
   let countFailure = 0; // 失敗回数
   for (let i = 0; i < numOfSimulation; i++) {
-    let amountRemaining = acwiData[i].price_jpy; // 資産残高
-
-    // 毎年の取崩し額: 初年度の資産額に取崩し率をかけた額
-    const withdrawals = amountRemaining * withdrawalRate * 0.01;
+    // 資産残高。100にすると毎年の取り崩し額 = withdrawalRateになる
+    let amountRemaining = 100;
 
     // 初年度の取り崩し
-    amountRemaining -= withdrawals;
+    amountRemaining -= withdrawalRate;
 
     for (let pi = 1; pi < payoutPeriod; pi++) {
       const prePrice = acwiData[i + 12 * (pi - 1)].price_jpy; // 1年前の基準価格
@@ -57,7 +55,7 @@ const simulate = (
       amountRemaining *= PercentageChange;
 
       // 資産残高から取崩し額を引く
-      amountRemaining -= withdrawals;
+      amountRemaining -= withdrawalRate;
 
       // 資産残高が0になったら失敗
       if (amountRemaining <= 0) {
