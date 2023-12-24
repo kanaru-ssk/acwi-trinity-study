@@ -1,1 +1,1 @@
-<p class="leading-7"><slot /></p>
+<p class="my-2 leading-7"><slot /></p>
