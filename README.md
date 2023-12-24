@@ -81,8 +81,8 @@ const simulate = (
       // 資産残高から取崩し額を引く
       amountRemaining -= withdrawalRate;
 
-      // 資産残高が0になったら失敗
-      if (amountRemaining <= 0) {
+      // 資産残高が0未満になったら失敗
+      if (amountRemaining < 0) {
         countFailure++;
         break;
       }
