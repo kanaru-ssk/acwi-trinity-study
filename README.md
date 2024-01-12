@@ -1,4 +1,4 @@
-# Trinity Study
+# Trinity Study 2024 Branch
 
 MSCI ACWI を日本円建てで取崩しシミュレーションした日本版トリニティスタディ。
 毎月最新データを自動的に取得し、シミュレーション結果を更新する。
